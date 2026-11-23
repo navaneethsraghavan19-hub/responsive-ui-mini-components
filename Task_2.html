@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 2 - Responsive Pricing Cards (Cricket Academy)</title>
+<style>
+/* 1. Box Model Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f0fdf4;
+  color: #0f172a;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* 2. Mobile Base Styles (default = 1-column stack) */
+.component-container {
+  width: 100%;
+  max-width: 960px;
+}
+
+.section-head {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-head svg {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.5rem;
+}
+
+.section-head h1 {
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
+.section-head p {
+  color: #4b5563;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Visually hidden radios that drive the billing toggle (CSS-only) */
+.billing-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Billing toggle pill (Flexbox) ---------- */
+.toggle-wrap {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #d1fae5;
+  padding: 0.3rem;
+  border-radius: 999px;
+}
+
+.toggle label {
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #166534;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  transition: opacity 0.2s ease;
+}
+
+.toggle label:hover { opacity: 0.8; }
+
+.save-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #b91c1c;
+  margin-left: 0.35rem;
+}
+
+/* Active pill state */
+#billing-monthly:checked ~ .toggle-wrap label[for="billing-monthly"],
+#billing-annual:checked  ~ .toggle-wrap label[for="billing-annual"] {
+  background: #ffffff;
+  color: #14532d;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+}
+
+/* Keyboard focus ring for the hidden radios */
+#billing-monthly:focus-visible ~ .toggle-wrap label[for="billing-monthly"],
+#billing-annual:focus-visible  ~ .toggle-wrap label[for="billing-annual"] {
+  outline: 3px solid #14532d;
+  outline-offset: 2px;
+}
+
+/* ---------- Pricing grid ---------- */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr;            /* mobile: stacked */
+  gap: 1.5rem;
+}
+
+/* ---------- Card (Flexbox column) ---------- */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;        /* button always sits at the bottom */
+  gap: 1.5rem;
+  background: #ffffff;
+  border: 2px solid #dcfce7;
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);           /* hover lift */
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.16);
+}
+
+.plan-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.plan-blurb {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+  line-height: 1.5;
+}
+
+.plan-price {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 1rem 0;
+}
+
+.plan-price small {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+}
+
+.plan-features li::before {
+  content: "\2713";
+  color: #16a34a;
+  font-weight: 800;
+  margin-right: 0.6rem;
+}
+
+.btn-select {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  background: #14532d;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.85rem 1.25rem;
+  border-radius: 12px;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.btn-select:hover  { opacity: 0.88; }
+.btn-select:active { transform: scale(0.96); }
+.btn-select:focus-visible { outline: 3px solid #b91c1c; outline-offset: 3px; }
+
+/* ---------- Featured "Pro Plan" card ---------- */
+.card-pro {
+  order: -1;                             /* mobile: Pro shown first (matches blueprint) */
+  background: #14532d;
+  color: #ffffff;
+  border-color: #4ade80;
+}
+
+.card-pro .plan-name  { color: #86efac; }
+.card-pro .plan-blurb,
+.card-pro .plan-price small { color: #bbf7d0; }
+.card-pro .plan-features li::before { color: #fde047; }
+.card-pro .btn-select { background: #dc2626; color: #ffffff; }   /* cricket-ball red */
+
+/* Pulsing glow: animates ONLY opacity (GPU-friendly) on a pseudo-element */
+.card-pro::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  border: 2px solid #86efac;
+  box-shadow: 0 0 28px 6px rgba(74, 222, 128, 0.7);
+  pointer-events: none;
+  animation: glow-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+
+.badge {
+  position: absolute;
+  top: -0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fde047;
+  color: #14532d;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  z-index: 1;
+}
+
+/* ---------- Billing switch (CSS-only price swap) ---------- */
+.price-annual { display: none; }
+
+#billing-annual:checked ~ .pricing-grid .price-monthly { display: none; }
+#billing-annual:checked ~ .pricing-grid .price-annual  { display: inline; }
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-pro::after { animation: none; opacity: 0.8; }
+  .card, .btn-select { transition: none; }
+}
+
+/* 3. Desktop Media Query Breakpoint */
+@media (min-width: 850px) {
+  .pricing-grid {
+    grid-template-columns: repeat(3, 1fr);   /* side-by-side */
+    gap: 1.5rem;
+  }
+
+  .card-pro {
+    order: 0;                                /* back to natural order */
+  }
+}
+</style>
+</head>
+<body>
+<main class="component-container">
+
+  <header class="section-head">
+    <!-- Inline SVG cricket ball -->
+    <svg viewBox="0 0 100 100" role="img" aria-label="Cricket ball">
+      <circle cx="50" cy="50" r="44" fill="#dc2626"/>
+      <path d="M22 18 C40 38 40 62 22 82" fill="none" stroke="#fef2f2" stroke-width="3" stroke-dasharray="5 4" stroke-linecap="round"/>
+      <path d="M78 18 C60 38 60 62 78 82" fill="none" stroke="#fef2f2" stroke-width="3" stroke-dasharray="5 4" stroke-linecap="round"/>
+      <path d="M50 8 V92" stroke="#7f1d1d" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <h1>PitchPerfect Cricket Academy</h1>
+    <p>Online coaching for batters, bowlers and fielders. Pick your innings.</p>
+  </header>
+
+  <!-- Radios must come before the elements they control -->
+  <input class="billing-radio" type="radio" name="billing" id="billing-monthly" checked>
+  <input class="billing-radio" type="radio" name="billing" id="billing-annual">
+
+  <!-- Billing toggle pill -->
+  <div class="toggle-wrap">
+    <div class="toggle" role="group" aria-label="Billing period">
+      <label for="billing-monthly">Monthly</label>
+      <label for="billing-annual">Annual <span class="save-tag">Save 25%</span></label>
+    </div>
+  </div>
+
+  <!-- Pricing grid -->
+  <section class="pricing-grid" aria-label="Pricing plans">
+
+    <!-- Starter -->
+    <article class="card">
+      <div>
+        <h2 class="plan-name">Starter</h2>
+        <p class="plan-blurb">Net practice for beginners getting a feel for the game.</p>
+        <p class="plan-price">Free</p>
+        <ul class="plan-features">
+          <li>2 live drills / month</li>
+          <li>Basic batting stats</li>
+        </ul>
+      </div>
+      <button class="btn-select" type="button">Select Starter</button>
+    </article>
+
+    <!-- Pro (featured) -->
+    <article class="card card-pro">
+      <span class="badge">POPULAR</span>
+      <div>
+        <h2 class="plan-name">Pro Plan</h2>
+        <p class="plan-blurb">Match-ready training for serious club players.</p>
+        <p class="plan-price">
+          <span class="price-monthly">&#8377;799<small>/mo</small></span>
+          <span class="price-annual">&#8377;599<small>/mo, billed yearly</small></span>
+        </p>
+        <ul class="plan-features">
+          <li>Unlimited video lessons</li>
+          <li>Bowling action analysis</li>
+          <li>Personal stats dashboard</li>
+          <li>Weekly live coaching</li>
+          <li>Match scorecard tracking</li>
+          <li>Priority coach chat</li>
+        </ul>
+      </div>
+      <button class="btn-select" type="button">Select Pro</button>
+    </article>
+
+    <!-- Team -->
+    <article class="card">
+      <div>
+        <h2 class="plan-name">Team</h2>
+        <p class="plan-blurb">For clubs, schools and academies.</p>
+        <p class="plan-price">
+          <span class="price-monthly">&#8377;1,999<small>/mo</small></span>
+          <span class="price-annual">&#8377;1,499<small>/mo, billed yearly</small></span>
+        </p>
+        <ul class="plan-features">
+          <li>15 player profiles</li>
+          <li>Team scorecards</li>
+          <li>Tournament fixtures</li>
+        </ul>
+      </div>
+      <button class="btn-select" type="button">Select Team</button>
+    </article>
+
+  </section>
+
+</main>
+</body>
+</html>

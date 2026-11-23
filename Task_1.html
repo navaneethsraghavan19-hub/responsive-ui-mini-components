@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 1 - Product Showcase Card (Cricket Bat)</title>
+<style>
+/* 1. Box Model Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f0fdf4;
+  color: #0f172a;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* 2. Mobile Base Styles (default = 1-column stack) */
+.component-container {
+  width: 100%;
+  max-width: 900px;
+}
+
+.product-card {
+  display: grid;
+  grid-template-columns: 1fr;           /* mobile: single column */
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+}
+
+/* ---------- Image side ---------- */
+.product-media {
+  position: relative;
+  overflow: hidden;                      /* keeps zoomed image inside the frame */
+  background: linear-gradient(160deg, #bbf7d0 0%, #4ade80 55%, #16a34a 100%);
+  min-height: 260px;
+}
+
+.product-media svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  transition: transform 0.3s ease;       /* smooth zoom */
+}
+
+.product-media:hover svg {
+  transform: scale(1.04);                /* zoom on hover */
+}
+
+.badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1;
+  background: #14532d;
+  color: #fde047;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+}
+
+/* ---------- Details side (Flexbox column) ---------- */
+.product-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;        /* even vertical spacing */
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+/* Category / rating row */
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #15803d;
+}
+
+.rating {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #b45309;
+}
+
+.product-title {
+  font-size: 1.7rem;
+  line-height: 1.2;
+  margin-top: 1rem;
+}
+
+.product-desc {
+  color: #475569;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+/* Features (flex-wrap chips) */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.features li {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+}
+
+/* Bottom pricing / button shelf */
+.buy-shelf {
+  display: flex;
+  flex-direction: column;                /* mobile: price above button */
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.price {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.tax-note {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.btn-add {
+  width: 100%;                           /* full width on small screens */
+  border: none;
+  cursor: pointer;
+  background: #dc2626;                   /* cricket-ball red */
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.9rem 1.5rem;
+  border-radius: 12px;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.btn-add:hover  { opacity: 0.9; }
+.btn-add:active { transform: scale(0.96); }   /* press-down effect */
+.btn-add:focus-visible { outline: 3px solid #14532d; outline-offset: 3px; }
+
+/* 3. Desktop Media Query Breakpoint */
+@media (min-width: 768px) {
+  .product-card {
+    grid-template-columns: 1fr 1fr;      /* image left, details right */
+  }
+
+  .product-media,
+  .product-media svg {
+    min-height: 100%;
+  }
+
+  .product-details {
+    padding: 2.25rem;
+  }
+
+  .buy-shelf {
+    flex-direction: row;                 /* price left, button right */
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-add {
+    width: auto;
+  }
+}
+</style>
+</head>
+<body>
+<main class="component-container">
+
+  <article class="product-card">
+
+    <!-- Image column -->
+    <div class="product-media">
+      <span class="badge">POPULAR</span>
+
+      <!-- Inline SVG illustration: cricket bat, ball and stumps -->
+      <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of a cricket bat leaning in front of a red ball and stumps on a green ground">
+        <defs>
+          <linearGradient id="skyGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ecfccb"/>
+            <stop offset="1" stop-color="#86efac" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#22c55e"/>
+            <stop offset="1" stop-color="#14532d"/>
+          </linearGradient>
+          <linearGradient id="pitchStrip" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f1e2b4"/>
+            <stop offset="1" stop-color="#d6bd80"/>
+          </linearGradient>
+          <linearGradient id="willow" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#f8e2b0"/>
+            <stop offset="0.5" stop-color="#eec988"/>
+            <stop offset="1" stop-color="#d9a45c"/>
+          </linearGradient>
+          <linearGradient id="willowEdge" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#c58a45"/>
+            <stop offset="0.5" stop-color="#e3b872"/>
+            <stop offset="1" stop-color="#b87a38"/>
+          </linearGradient>
+          <linearGradient id="grip" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#7f1d1d"/>
+            <stop offset="0.45" stop-color="#ef4444"/>
+            <stop offset="1" stop-color="#7f1d1d"/>
+          </linearGradient>
+          <linearGradient id="stump" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#fde9b8"/>
+            <stop offset="0.5" stop-color="#fff7e0"/>
+            <stop offset="1" stop-color="#d9b877"/>
+          </linearGradient>
+          <radialGradient id="ball" cx="0.35" cy="0.3" r="0.8">
+            <stop offset="0" stop-color="#fb7185"/>
+            <stop offset="0.45" stop-color="#dc2626"/>
+            <stop offset="1" stop-color="#7f1d1d"/>
+          </radialGradient>
+        </defs>
+
+        <!-- sky glow and sun -->
+        <rect width="400" height="400" fill="url(#skyGlow)"/>
+        <circle cx="332" cy="72" r="46" fill="#fef9c3" opacity="0.35"/>
+        <circle cx="332" cy="72" r="28" fill="#fef9c3" opacity="0.9"/>
+
+        <!-- ground: outfield and pitch strip -->
+        <rect x="0" y="300" width="400" height="100" fill="url(#grass)"/>
+        <rect x="0" y="300" width="400" height="14" fill="#4ade80" opacity="0.35"/>
+        <rect x="0" y="336" width="400" height="64" fill="url(#pitchStrip)"/>
+        <rect x="0" y="352" width="400" height="3" fill="#ffffff" opacity="0.85"/>
+
+        <!-- stumps -->
+        <ellipse cx="82" cy="350" rx="48" ry="7" fill="#000" opacity="0.18"/>
+        <rect x="52" y="220" width="10" height="130" rx="4" fill="url(#stump)"/>
+        <rect x="77" y="220" width="10" height="130" rx="4" fill="url(#stump)"/>
+        <rect x="102" y="220" width="10" height="130" rx="4" fill="url(#stump)"/>
+        <rect x="53" y="214" width="32" height="7" rx="3.5" fill="#b45309"/>
+        <rect x="79" y="214" width="32" height="7" rx="3.5" fill="#92400e"/>
+
+        <!-- ball shadow and ball -->
+        <ellipse cx="322" cy="356" rx="42" ry="8" fill="#000" opacity="0.25"/>
+        <circle cx="322" cy="318" r="38" fill="url(#ball)"/>
+        <path d="M300 289 C316 307 316 329 300 347" fill="none" stroke="#fff1f2" stroke-width="2.5" stroke-dasharray="4 3.5" stroke-linecap="round"/>
+        <path d="M344 289 C328 307 328 329 344 347" fill="none" stroke="#fff1f2" stroke-width="2.5" stroke-dasharray="4 3.5" stroke-linecap="round"/>
+        <path d="M322 281 V355" stroke="#7f1d1d" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="308" cy="302" rx="9" ry="5.5" fill="#fff" opacity="0.4" transform="rotate(-35 308 302)"/>
+
+        <!-- bat shadow -->
+        <ellipse cx="206" cy="364" rx="58" ry="8" fill="#000" opacity="0.28"/>
+
+        <!-- bat (leaning) -->
+        <g transform="translate(6 0) rotate(15 200 362)">
+          <!-- top knob and rubber grip -->
+          <rect x="190" y="14" width="20" height="9" rx="4.5" fill="#450a0a"/>
+          <rect x="187" y="20" width="26" height="102" rx="9" fill="url(#grip)"/>
+          <g stroke="#450a0a" stroke-width="2.5" opacity="0.55" stroke-linecap="round">
+            <path d="M188 38 L212 30"/>
+            <path d="M188 54 L212 46"/>
+            <path d="M188 70 L212 62"/>
+            <path d="M188 86 L212 78"/>
+            <path d="M188 102 L212 94"/>
+          </g>
+          <!-- grip cap ring -->
+          <rect x="185" y="118" width="30" height="7" rx="3.5" fill="#1f2937"/>
+
+          <!-- splice / shoulders -->
+          <path d="M187 125 H213 L226 150 H174 Z" fill="#b87a38"/>
+          <path d="M193 128 H207 L212 148 H188 Z" fill="#8a5424" opacity="0.55"/>
+
+          <!-- blade -->
+          <path d="M174 148 H226 L247 186 L250 342 Q250 362 232 362 H168 Q150 362 150 342 L153 186 Z" fill="url(#willow)"/>
+          <!-- side edges -->
+          <path d="M153 186 L150 342 Q150 362 168 362 H176 Q160 358 160 340 L162 190 Z" fill="url(#willowEdge)"/>
+          <path d="M247 186 L250 342 Q250 362 232 362 H224 Q240 358 240 340 L238 190 Z" fill="url(#willowEdge)"/>
+          <!-- spine ridge -->
+          <path d="M192 156 H208 V350 Q208 356 200 356 Q192 356 192 350 Z" fill="#c78d48" opacity="0.4"/>
+          <!-- wood grain -->
+          <g stroke="#b9803c" stroke-width="1.6" stroke-linecap="round" opacity="0.55">
+            <path d="M172 200 V340"/>
+            <path d="M182 190 V346"/>
+            <path d="M218 190 V346"/>
+            <path d="M228 200 V340"/>
+          </g>
+          <!-- toe guard -->
+          <path d="M152 332 H248 V342 Q248 360 232 360 H168 Q152 360 152 342 Z" fill="#8a5424" opacity="0.4"/>
+          <!-- maker sticker -->
+          <rect x="172" y="208" width="56" height="48" rx="6" fill="#14532d"/>
+          <rect x="172" y="208" width="56" height="48" rx="6" fill="none" stroke="#fde047" stroke-width="2"/>
+          <text x="200" y="228" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#fde047" letter-spacing="0.8">WILLOW</text>
+          <text x="200" y="242" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#ffffff" letter-spacing="1.4">PRO</text>
+          <!-- highlight -->
+          <path d="M166 192 V330" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Details column -->
+    <div class="product-details">
+
+      <div>
+        <div class="meta-row">
+          <span class="category">Sports &amp; Outdoors</span>
+          <span class="rating" aria-label="Rated 4.9 out of 5">4.9 &#9733;</span>
+        </div>
+
+        <h1 class="product-title">Willow Pro Cricket Bat</h1>
+        <p class="product-desc">
+          A well-balanced Kashmir willow bat built for the gully, the nets and
+          the weekend league. Pick it up, take guard and play your shots.
+        </p>
+      </div>
+
+      <ul class="features">
+        <li>Kashmir willow</li>
+        <li>Cane handle</li>
+        <li>Full size (SH)</li>
+        <li>Anti-scuff sheet</li>
+        <li>Grip included</li>
+      </ul>
+
+      <div class="buy-shelf">
+        <div class="price">
+          &#8377;1,499
+          <span class="tax-note">Tax included</span>
+        </div>
+        <button class="btn-add" type="button">Add to Bag</button>
+      </div>
+
+    </div>
+  </article>
+
+</main>
+</body>
+</html>
